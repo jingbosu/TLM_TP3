@@ -1,0 +1,17 @@
+/*
+ * Generator.h
+ *
+ *  Created on: 17 nov. 2015
+ *      Author: su
+ */
+
+#ifndef GENERATOR_H_
+#define GENERATOR_H_
+
+SC_MODULE(Generator){
+	ensitlm::initiator_socket<Bus, true> initiator;
+	ensitlm::target_socket<Bus, true> target;
+	Generator(sc_core::sc_module_name name);
+}
+
+#endif /* GENERATOR_H_ */

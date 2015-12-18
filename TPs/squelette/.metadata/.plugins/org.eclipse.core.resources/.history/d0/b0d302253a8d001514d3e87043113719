@@ -1,0 +1,6 @@
+#include "ensitlm.h"
+
+sc_main(int argc, char **argv){
+	Generator gen1("Generator1");
+	Bus b1("Bus");
+}

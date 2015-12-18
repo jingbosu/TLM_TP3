@@ -1,0 +1,12 @@
+16:00:36 **** Incremental Build of configuration Debug for project tp1 ****
+make all 
+Building file: ../Generator.cpp
+Invoking: GCC C++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"Generator.d" -MT"Generator.o" -o "Generator.o" "../Generator.cpp"
+In file included from ../Generator.h:10:0,
+                 from ../Generator.cpp:8:
+../bus.h:4:21: fatal error: ensitlm.h: Aucun fichier ou dossier de ce type
+ #include "ensitlm.h"
+                     ^
+compilation terminated.
+make: *** [Generator.o] Erreur 1

@@ -1,0 +1,15 @@
+/*
+ * Generator.h
+ *
+ *  Created on: 17 nov. 2015
+ *      Author: su
+ */
+
+#ifndef GENERATOR_H_
+#define GENERATOR_H_
+
+SC_MODULE(Generator){
+
+}
+
+#endif /* GENERATOR_H_ */

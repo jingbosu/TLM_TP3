@@ -1,0 +1,18 @@
+/*
+ * Generator.cpp
+ *
+ *  Created on: 17 nov. 2015
+ *      Author: su
+ */
+
+#include "Generator.h"
+
+Generator::Generator() {
+	// TODO Auto-generated constructor stub
+
+}
+
+Generator::~Generator() {
+	// TODO Auto-generated destructor stub
+}
+
