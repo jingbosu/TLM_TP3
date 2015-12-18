@@ -1,0 +1,27 @@
+MEMORY 
+{
+   bram : ORIGIN = 0x00000000, LENGTH = 0x00004000
+}
+
+SECTIONS
+{
+   .all    : { boot.o(.text)
+               *(.text)
+               *(.rodata)
+               *(.data)
+               _edata = ALIGN(4);
+               *(.sdata)
+               *(.sbss)
+               _end = ALIGN(4);  } > bram
+.bss : /* Uninitialized data. */
+        {
+                _BssStart = . ;
+                *(.bss)
+                _BssEnd = . ;
+        } > bram
+   /* watch address_map.h and we find addr_base for memory is 0x20100000 with size of 0x00100000. 
+      hex(hex(0x20100000)+hex(0x00100000)-hex(0x4)) = 0x201FFFFC
+      We need remove the last word (4 bytes) for some reasons...
+*/
+	_stack_top  = 0x201FFFFC; 
+}
