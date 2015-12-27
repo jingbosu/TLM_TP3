@@ -49,17 +49,39 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 #endif
 		m_iss.setDataResponse(0, localbuf);
 	} break;
-	case iss_t::READ_BYTE:
+
+	case iss_t::READ_BYTE: {
+
+		/*Pour savoir c'est lequel octet dans un mot lu (0, 1, 2 ou 3)*/
+		uint32_t offset = mem_addr % sizeof(uint32_t);
+
+		status = socket.read(mem_addr-offset, localbuf);
+		if(status != tlm::TLM_OK_RESPONSE){
+			cout << "Can't read correctly!" << endl;
+			exit(1);
+		}
+
+		/*convertir little-endian en big-endian*/
+		localbuf >>= 8 * ((sizeof(uint32_t) - 1) - offset);
+                localbuf &= 0xFF;                        
+
+                m_iss.setDataResponse(0,localbuf);
+	} break;
+
 	case iss_t::WRITE_HALF:
+
 	case iss_t::WRITE_BYTE:
+
 	case iss_t::READ_HALF:
 		// Not needed for our platform.
 		std::cerr << "Operation " << mem_type << " unsupported for "
 		          << std::showbase << std::hex << mem_addr << std::endl;
 		abort();
+
 	case iss_t::LINE_INVAL:
 		// No cache => nothing to do.
 		break;
+
 	case iss_t::WRITE_WORD: {
 		/* The ISS requested a data write
 		   (mem_wdata at mem_addr). */
