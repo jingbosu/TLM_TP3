@@ -37,11 +37,13 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		   (mem_addr into localbuf). */
 
 		status = socket.read(mem_addr, localbuf);
-		localbuf = uint32_machine_to_be(localbuf);
+		
 		if(status != tlm::TLM_OK_RESPONSE){
 			cout << "Can't read correctly!" << endl;
 			exit(1);
 		}
+
+		localbuf = uint32_machine_to_be(localbuf);
 
 #ifdef DEBUG
 		std::cout << hex << "read    " << setw(10) << localbuf
