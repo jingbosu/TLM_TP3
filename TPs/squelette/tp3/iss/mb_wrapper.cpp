@@ -57,15 +57,25 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		/*Pour savoir c'est lequel octet dans un mot lu (0, 1, 2 ou 3)*/
 		uint32_t offset = mem_addr % sizeof(uint32_t);
 
-		status = socket.read(mem_addr-offset, localbuf);
+		//addr_start est l'adresse de premier octet lequel on va lire
+		uint32_t addr_start = mem_addr - offset;
+		
+		status = socket.read(addr_start, localbuf);
 		if(status != tlm::TLM_OK_RESPONSE){
 			cout << "Can't read correctly!" << endl;
 			exit(1);
 		}
 
-		/*convertir little-endian en big-endian*/
-		localbuf >>= 8 * ((sizeof(uint32_t) - 1) - offset);
-                localbuf &= 0xFF;                        
+		//Pour savoir combien de bits faut decaler
+		uint32_t dec = 8 * ((sizeof(uint32_t) - 1) - offset);
+
+		//Decaler les bits necessaires
+		localbuf = localbuf >> dec;
+
+		//Recuperer seulement l'octet qu'on a besoin
+                localbuf = localbuf & 0xFF;                        
+
+		//Pas besoin convertir endianness?
 
                 m_iss.setDataResponse(0,localbuf);
 	} break;

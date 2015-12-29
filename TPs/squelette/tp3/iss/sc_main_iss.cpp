@@ -82,7 +82,8 @@ int sc_main(int, char **) {
 	bus.map(vga.target,      VGA_BASEADDR,      VGA_SIZE);
 	bus.map(gpio.target,     GPIO_BASEADDR,     GPIO_SIZE);
 	bus.map(timer.target,    TIMER_BASEADDR,    TIMER_SIZE);
-
+	//AJOUTE
+	bus.map(uart.target,     UART_BASEADDR,     UART_SIZE);
 
 	// start the simulation
 	sc_core::sc_start();
