@@ -20,26 +20,22 @@
 #define abort() ((*(int *)NULL) = 0)
 
 /* TODO : implementer ces primitives pour la compilation croisée */
-#define read_mem(a)     (*(uint32_t*)(a))
-#define write_mem(a,d)  (*(uint32_t*)(a) = (uint32_t)(d))
+#define read_mem(a)     (*(volatile uint32_t*)(a))
+#define write_mem(a,d)  (*(volatile uint32_t*)(a) = (uint32_t)(d))
 #define wait_for_irq()  abort()
 #define cpu_relax()     abort()
 
-//volatile uint32_t read_mem(uint32_t addr) {
-//	return *(uint32_t*)addr;
-//}
-
-//volatile void write_mem(uint32_t addr, uint32_t data) {
-//	*(uint32_t*)addr = data;
-//}
-
-/* printf is implemented with just one argument, A TESTER!!!!!!
+/* printf is implemented with just one argument
 	UART_BASEADDR peut trouver dans address_map.h
 	UART_FIFO_WRITE peut trouver dans hardware/offsets/uart.h
 */
-#define printf(x) int i = 0;\
-		  for(i = 0; x[i] != '\0'; i++){ \
-		  	(*(char*)(UART_BASEADDR + UART_FIFO_WRITE)) = ((char)x[i]);\
-		  }
+
+#define printf(x) \
+		do {\
+			int i = 0;\
+			for(i = 0; x[i] != '\0'; i++){ \
+			  	(*(volatile uint32_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = ((uint32_t)x[i]);\
+			} \
+		} while(0)
 
 #endif /* HAL_H */

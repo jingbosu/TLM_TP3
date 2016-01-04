@@ -20,6 +20,7 @@ struct MBWrapper : sc_core::sc_module {
 	void run_iss(void);
 
 	SC_CTOR(MBWrapper);
+	void iss_interrupt(void);
 
 private:
 	typedef soclib::common::MicroBlazeIss iss_t;

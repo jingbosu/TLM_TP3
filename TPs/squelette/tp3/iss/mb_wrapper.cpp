@@ -24,6 +24,11 @@ MBWrapper::MBWrapper(sc_core::sc_module_name name)
 	m_iss.reset();
 	m_iss.setIrq(false);
 	SC_THREAD(run_iss);
+
+	//AJOUTE
+	SC_METHOD(iss_interrupt);
+        sensitive << irq.pos();
+	dont_initialize();
 }
 
 
@@ -75,8 +80,6 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		//Recuperer seulement l'octet qu'on a besoin
                 localbuf = localbuf & 0xFF;                        
 
-		//Pas besoin convertir endianness?
-
                 m_iss.setDataResponse(0,localbuf);
 	} break;
 
@@ -123,6 +126,7 @@ void MBWrapper::run_iss(void) {
 
 	int inst_count = 0;
 	tlm::tlm_response_status status;
+	int count = 0;	
 	while (true) {
 		if (m_iss.isBusy())
 			m_iss.nullStep();
@@ -159,8 +163,18 @@ void MBWrapper::run_iss(void) {
 				                  mem_wdata);
 			}
 			m_iss.step();
+			count = count + 1;
+			if(count == 5){
+				m_iss.setIrq(false);
+				count = 0;			
+			}
+			
 		}
 
 		wait(PERIOD);
 	}
+}
+
+void MBWrapper::iss_interrupt(void) {
+	m_iss.setIrq(true);
 }
