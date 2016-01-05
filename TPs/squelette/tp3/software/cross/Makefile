@@ -17,7 +17,7 @@ OBJS = main.o boot.o it.o
 
 EXEC = a.out
 
-DEP_MAIN = ../main.c hal.h ../../address_map.h ../../hardware/offsets/gpio.h ../../hardware/offsets/memory.h ../../hardware/offsets/timer.h ../../hardware/offsets/uart.h ../../hardware/offsets/vga.h
+DEP_MAIN = ../main.c hal.h ../../address_map.h ../../hardware/offsets/*.h
 
 # Disassembly of the generated executable.
 dump.txt: $(EXEC)

@@ -45,7 +45,7 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		
 		if(status != tlm::TLM_OK_RESPONSE){
 			cout << "Can't read correctly!" << endl;
-			exit(1);
+			abort();
 		}
 
 		localbuf = uint32_machine_to_be(localbuf);
@@ -68,7 +68,7 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		status = socket.read(addr_start, localbuf);
 		if(status != tlm::TLM_OK_RESPONSE){
 			cout << "Can't read correctly!" << endl;
-			exit(1);
+			abort();
 		}
 
 		//Pour savoir combien de bits faut decaler
@@ -105,7 +105,7 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		
 		if(status != tlm::TLM_OK_RESPONSE){
 			cout << "Can't write correctly!" << endl;
-			exit(1);
+			abort();
 		}
 
 
@@ -142,9 +142,9 @@ void MBWrapper::run_iss(void) {
 				uint32_t localbuf;
 				status = socket.read(ins_addr, localbuf);
 
-				if(status != tlm::TLM_OK_RESPONSE){
+				if(status != tlm::TLM_OK_RESPONSE) {
 					cout << "Can't fetch correctly!" << endl;
-					exit(1);
+					abort();
 				}
 
 				localbuf = uint32_machine_to_be(localbuf);
@@ -164,11 +164,10 @@ void MBWrapper::run_iss(void) {
 			}
 			m_iss.step();
 			count = count + 1;
-			if(count == 5){
+			if(count == 5) {
 				m_iss.setIrq(false);
 				count = 0;			
 			}
-			
 		}
 
 		wait(PERIOD);
