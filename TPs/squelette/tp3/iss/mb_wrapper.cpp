@@ -25,7 +25,7 @@ MBWrapper::MBWrapper(sc_core::sc_module_name name)
 	m_iss.setIrq(false);
 	SC_THREAD(run_iss);
 
-	//AJOUTE
+	//La methode d'interruption qui est active sur le front montant
 	SC_METHOD(iss_interrupt);
         sensitive << irq.pos();
 	dont_initialize();
@@ -43,11 +43,12 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 
 		status = socket.read(mem_addr, localbuf);
 		
-		if(status != tlm::TLM_OK_RESPONSE){
+		if (status != tlm::TLM_OK_RESPONSE) {
 			cout << "Can't read correctly!" << endl;
 			abort();
 		}
-
+		//On convert le data lu Little-endian (machine 
+		//Intel) en Big-endian (ISS) 
 		localbuf = uint32_machine_to_be(localbuf);
 
 #ifdef DEBUG
@@ -58,15 +59,15 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 	} break;
 
 	case iss_t::READ_BYTE: {
-
-		/*Pour savoir c'est lequel octet dans un mot lu (0, 1, 2 ou 3)*/
+		/*But de cette case est de recuperer un octet dans un mot lu*/
+		//Pour savoir c'est lequel octet dans un mot lu (0, 1, 2 ou 3)
 		uint32_t offset = mem_addr % sizeof(uint32_t);
 
 		//addr_start est l'adresse de premier octet lequel on va lire
 		uint32_t addr_start = mem_addr - offset;
 		
 		status = socket.read(addr_start, localbuf);
-		if(status != tlm::TLM_OK_RESPONSE){
+		if (status != tlm::TLM_OK_RESPONSE) {
 			cout << "Can't read correctly!" << endl;
 			abort();
 		}
@@ -101,9 +102,11 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		/* The ISS requested a data write
 		   (mem_wdata at mem_addr). */
 
+		//On convert le mot big-endian en little-endian 
+		//pour utiliser sur la machine Intel
 		status = socket.write(mem_addr, uint32_be_to_machine(mem_wdata));
 		
-		if(status != tlm::TLM_OK_RESPONSE){
+		if (status != tlm::TLM_OK_RESPONSE) {
 			cout << "Can't write correctly!" << endl;
 			abort();
 		}
@@ -124,9 +127,9 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 
 void MBWrapper::run_iss(void) {
 
-	int inst_count = 0;
 	tlm::tlm_response_status status;
 	int count = 0;	
+	
 	while (true) {
 		if (m_iss.isBusy())
 			m_iss.nullStep();
@@ -142,7 +145,7 @@ void MBWrapper::run_iss(void) {
 				uint32_t localbuf;
 				status = socket.read(ins_addr, localbuf);
 
-				if(status != tlm::TLM_OK_RESPONSE) {
+				if (status != tlm::TLM_OK_RESPONSE) {
 					cout << "Can't fetch correctly!" << endl;
 					abort();
 				}
@@ -162,7 +165,10 @@ void MBWrapper::run_iss(void) {
 				exec_data_request(mem_type, mem_addr,
 				                  mem_wdata);
 			}
+			
 			m_iss.step();
+			
+			//On compte 5 fois pour que ISS arrive de reagir 
 			count = count + 1;
 			if(count == 5) {
 				m_iss.setIrq(false);
@@ -174,6 +180,7 @@ void MBWrapper::run_iss(void) {
 	}
 }
 
+/*iss_inteerupt sert a activer la fonctionnalite d'interruption de iss*/
 void MBWrapper::iss_interrupt(void) {
 	m_iss.setIrq(true);
 }

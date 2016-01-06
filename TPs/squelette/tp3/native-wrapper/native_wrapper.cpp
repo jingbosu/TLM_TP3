@@ -44,33 +44,37 @@ NativeWrapper::NativeWrapper(sc_core::sc_module_name name) : sc_module(name),
 	dont_initialize();       
 }
 
+/*Ecrire les data lus dans l'addresse designe*/
 void NativeWrapper::write_mem(unsigned int addr, unsigned int data)
 {
 	tlm::tlm_response_status status;
 	status = socket.write(addr, data);
-	if(status != tlm::TLM_OK_RESPONSE){
+	if (status != tlm::TLM_OK_RESPONSE) {
 		cout << "Can't write correctly!" << endl;
 		abort();
 	}
 }
 
+/*Recuperer les data dans l'addresse demande*/
 unsigned int NativeWrapper::read_mem(unsigned int addr)
 {
-	unsigned int data;
+	ensitlm::data_t data;
 	tlm::tlm_response_status status;
 	status = socket.read(addr, data);
-	if(status != tlm::TLM_OK_RESPONSE){
+	if (status != tlm::TLM_OK_RESPONSE) {
 		cout << "Can't read correctly!" << endl;
 		abort();
 	}
-	return data;
+	return (unsigned int) data;
 }
 
+/*Eviter la simulation de tomber dans la boucle infinie*/
 void NativeWrapper::cpu_relax()
 {
 	wait(1, sc_core::SC_MS);
 }
 
+/*Attendre l'appel de l'interruption*/
 void NativeWrapper::wait_for_irq()
 {
 	if(!interrupt) {
@@ -79,11 +83,13 @@ void NativeWrapper::wait_for_irq()
 	interrupt = false;
 }
 
+/*Commencer de faire la simulation*/
 void NativeWrapper::compute()
 {
 	__start();
 }
 
+/*Gerer l'interruption*/
 void NativeWrapper::interrupt_handler_internal()
 {
 	interrupt = true;

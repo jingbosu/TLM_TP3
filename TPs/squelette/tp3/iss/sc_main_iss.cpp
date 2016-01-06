@@ -32,7 +32,6 @@ int sc_main(int, char **) {
 	Vga vga("vga");
 	Intc intc("intc");
 	Gpio gpio("gpio");
-	//AJOUTE
         UART uart("UART");
 
 	sc_core::sc_signal<bool> timer_irq("timer_irq");
@@ -65,7 +64,6 @@ int sc_main(int, char **) {
 	bus.initiator(vga.target);
 	bus.initiator(timer.target);
 	bus.initiator(gpio.target);
-	//AJOUTE
 	bus.initiator(uart.target);
 
 	// interrupts
@@ -82,7 +80,6 @@ int sc_main(int, char **) {
 	bus.map(vga.target,      VGA_BASEADDR,      VGA_SIZE);
 	bus.map(gpio.target,     GPIO_BASEADDR,     GPIO_SIZE);
 	bus.map(timer.target,    TIMER_BASEADDR,    TIMER_SIZE);
-	//AJOUTE
 	bus.map(uart.target,     UART_BASEADDR,     UART_SIZE);
 
 	// start the simulation

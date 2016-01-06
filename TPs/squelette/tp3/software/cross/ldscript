@@ -19,9 +19,9 @@ SECTIONS
                 *(.bss)
                 _BssEnd = . ;
         } > bram
-   /* watch address_map.h and we find addr_base for memory is 0x20100000 with size of 0x00100000. 
-      hex(hex(0x20100000)+hex(0x00100000)-hex(0x4)) = 0x201FFFFC
-      We need remove the last word (4 bytes) for reasons that we should put pointer on the last element but not above the last
-*/
+	/* watch address_map.h and we find addr_base for memory is 0x20100000 with size of 0x00100000. 
+	*  hex(hex(0x20100000)+hex(0x00100000)-hex(0x4)) = 0x201FFFFC
+	*  We need remove the last word (4 bytes) for reasons that we should put pointer on the last element but not above the last
+	*/
 	_stack_top  = 0x201FFFFC; 
 }
